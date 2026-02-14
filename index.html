@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#2196F3">
+    <link rel="shortcut icon" href="./logo.jpeg">
+    <title>AMS</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="stylesheet" href="styles/main.css">
+</head>
+
+<body>
+    <style>
+        /* Hide all screens initially to prevent flash */
+        .screen {
+            display: none !important;
+        }
+        /* Show loading state initially */
+        #app-loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            font-size: 1.2rem;
+            color: #2196F3;
+        }
+    </style>
+    <div id="app">
+        <div id="app-loading">جاري التحميل...</div>
+        <!-- Login Screen -->
+        <div id="login-screen" class="screen">
+            <div class="login-container">
+                <h1>نظام المحاسبة والمخزون</h1>
+                <form id="login-form">
+                    <div class="form-group">
+                        <label for="email">البريد الإلكتروني:</label>
+                        <input type="email" id="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="password">كلمة المرور:</label>
+                        <input type="password" id="password" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">تسجيل الدخول</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Main Dashboard -->
+        <div id="dashboard-screen" class="screen">
+            <header class="app-header">
+                <h2>لوحة التحكم</h2>
+                <button id="logout-btn" class="btn btn-secondary">تسجيل الخروج</button>
+            </header>
+            <nav class="main-nav">
+                <button class="nav-btn active" data-screen="dashboard">الرئيسية</button>
+                <button class="nav-btn" data-screen="inventory">المخزون</button>
+                <button class="nav-btn" data-screen="transactions">المعاملات</button>
+                <button class="nav-btn" data-screen="creditors-debtors">الدائنين والمدينين</button>
+                <button class="nav-btn" data-screen="reports">التقارير</button>
+                <button class="nav-btn" data-screen="settings">الإعدادات</button>
+                <button class="nav-btn" data-screen="help">التعليمات</button>
+            </nav>
+            <main class="main-content">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <h3>إجمالي الربح</h3>
+                        <p id="total-profit" class="stat-value">0</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>إجمالي التكلفة</h3>
+                        <p id="total-cost" class="stat-value">0</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>إجمالي المدفوع</h3>
+                        <p id="total-paid" class="stat-value">0</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>إجمالي المبيعات</h3>
+                        <p id="total-sales" class="stat-value">0</p>
+                    </div>
+                </div>
+            </main>
+        </div>
+
+        <!-- Inventory Screen -->
+        <div id="inventory-screen" class="screen">
+            <header class="app-header">
+                <h2>إدارة المخزون</h2>
+                <button class="btn btn-primary" id="add-product-btn">إضافة منتج</button>
+            </header>
+            <nav class="main-nav">
+                <button class="nav-btn" data-screen="dashboard">الرئيسية</button>
+                <button class="nav-btn active" data-screen="inventory">المخزون</button>
+                <button class="nav-btn" data-screen="transactions">المعاملات</button>
+                <button class="nav-btn" data-screen="creditors-debtors">الدائنين والمدينين</button>
+                <button class="nav-btn" data-screen="reports">التقارير</button>
+                <button class="nav-btn" data-screen="settings">الإعدادات</button>
+            </nav>
+            <main class="main-content">
+                <div class="section-tabs">
+                    <button class="tab-btn active" data-tab="categories">الفئات</button>
+                    <button class="tab-btn" data-tab="products">المنتجات</button>
+                </div>
+
+                <div id="categories-tab" class="tab-content active">
+                    <div class="section-header">
+                        <h3>الفئات</h3>
+                        <button class="btn btn-primary" id="add-category-btn">إضافة فئة</button>
+                    </div>
+                    <div id="categories-list" class="list-container"></div>
+                </div>
+
+                <div id="products-tab" class="tab-content">
+                    <div class="section-header">
+                        <h3>المنتجات</h3>
+                        <input type="text" id="product-search" placeholder="بحث عن منتج..." class="search-input">
+                    </div>
+                    <div id="products-list" class="list-container"></div>
+                </div>
+            </main>
+        </div>
+
+        <!-- Transactions Screen -->
+        <div id="transactions-screen" class="screen">
+            <header class="app-header">
+                <h2>المعاملات المالية</h2>
+                <div class="action-buttons">
+                    <button class="btn btn-success" id="add-sale-btn">بيع</button>
+                    <button class="btn btn-info" id="add-purchase-btn">شراء</button>
+                    <button class="btn btn-warning" id="add-expense-btn">مصروف</button>
+                </div>
+            </header>
+            <nav class="main-nav">
+                <button class="nav-btn" data-screen="dashboard">الرئيسية</button>
+                <button class="nav-btn" data-screen="inventory">المخزون</button>
+                <button class="nav-btn active" data-screen="transactions">المعاملات</button>
+                <button class="nav-btn" data-screen="creditors-debtors">الدائنين والمدينين</button>
+                <button class="nav-btn" data-screen="reports">التقارير</button>
+                <button class="nav-btn" data-screen="settings">الإعدادات</button>
+            </nav>
+            <main class="main-content">
+                <div class="filters">
+                    <input type="date" id="transaction-date-filter" class="filter-input">
+                    <select id="transaction-type-filter" class="filter-input">
+                        <option value="">جميع الأنواع</option>
+                        <option value="sale">بيع</option>
+                        <option value="purchase">شراء</option>
+                        <option value="expense">مصروف</option>
+                    </select>
+                </div>
+                <div id="transactions-list" class="list-container"></div>
+            </main>
+        </div>
+
+        <!-- Creditors/Debtors Screen -->
+        <div id="creditors-debtors-screen" class="screen">
+            <header class="app-header">
+                <h2>الدائنين والمدينين</h2>
+                <button class="btn btn-primary" id="add-party-btn">إضافة طرف</button>
+            </header>
+            <nav class="main-nav">
+                <button class="nav-btn" data-screen="dashboard">الرئيسية</button>
+                <button class="nav-btn" data-screen="inventory">المخزون</button>
+                <button class="nav-btn" data-screen="transactions">المعاملات</button>
+                <button class="nav-btn active" data-screen="creditors-debtors">الدائنين والمدينين</button>
+                <button class="nav-btn" data-screen="reports">التقارير</button>
+                <button class="nav-btn" data-screen="settings">الإعدادات</button>
+            </nav>
+            <main class="main-content">
+                <div class="section-tabs">
+                    <button class="tab-btn active" data-tab="debtors">المدينون</button>
+                    <button class="tab-btn" data-tab="creditors">الدائنون</button>
+                </div>
+                <div id="debtors-tab" class="tab-content active">
+                    <div id="debtors-list" class="list-container"></div>
+                </div>
+                <div id="creditors-tab" class="tab-content">
+                    <div id="creditors-list" class="list-container"></div>
+                </div>
+            </main>
+        </div>
+
+        <!-- Reports Screen -->
+        <div id="reports-screen" class="screen">
+            <header class="app-header">
+                <h2>التقارير والتحليلات</h2>
+            </header>
+            <nav class="main-nav">
+                <button class="nav-btn" data-screen="dashboard">الرئيسية</button>
+                <button class="nav-btn" data-screen="inventory">المخزون</button>
+                <button class="nav-btn" data-screen="transactions">المعاملات</button>
+                <button class="nav-btn" data-screen="creditors-debtors">الدائنين والمدينين</button>
+                <button class="nav-btn active" data-screen="reports">التقارير</button>
+                <button class="nav-btn" data-screen="settings">الإعدادات</button>
+            </nav>
+            <main class="main-content">
+                <div class="section-tabs">
+                    <button class="tab-btn active" data-tab="general-report">التقرير العام</button>
+                    <button class="tab-btn" data-tab="category-report">تقارير الفئات</button>
+                    <button class="tab-btn" data-tab="item-report">تقارير المنتجات</button>
+                </div>
+                <div id="general-report-tab" class="tab-content active">
+                    <div id="general-report-content"></div>
+                </div>
+                <div id="category-report-tab" class="tab-content">
+                    <div id="category-report-content"></div>
+                </div>
+                <div id="item-report-tab" class="tab-content">
+                    <div id="item-report-content"></div>
+                </div>
+            </main>
+        </div>
+
+        <!-- Settings Screen -->
+        <div id="settings-screen" class="screen">
+            <header class="app-header">
+                <h2>الإعدادات</h2>
+            </header>
+            <nav class="main-nav">
+                <button class="nav-btn" data-screen="dashboard">الرئيسية</button>
+                <button class="nav-btn" data-screen="inventory">المخزون</button>
+                <button class="nav-btn" data-screen="transactions">المعاملات</button>
+                <button class="nav-btn" data-screen="creditors-debtors">الدائنين والمدينين</button>
+                <button class="nav-btn" data-screen="reports">التقارير</button>
+                <button class="nav-btn active" data-screen="settings">الإعدادات</button>
+            </nav>
+            <main class="main-content">
+                <div class="section-tabs">
+                    <button class="tab-btn active" data-tab="exchange-rates">أسعار الصرف</button>
+                    <button class="tab-btn" data-tab="backup">النسخ الاحتياطي</button>
+                </div>
+                <div id="exchange-rates-tab" class="tab-content active">
+                    <div class="section-header">
+                        <h3>إدارة أسعار الصرف</h3>
+                        <button class="btn btn-primary" id="add-exchange-rate-btn">إضافة سعر صرف</button>
+                    </div>
+                    <div id="exchange-rates-list" class="list-container"></div>
+                </div>
+                <div id="backup-tab" class="tab-content">
+                    <div class="backup-section">
+                        <h3>النسخ الاحتياطي</h3>
+                        <button class="btn btn-primary" id="export-btn">تصدير البيانات</button>
+                        <input type="file" id="import-file" accept=".json" style="display: none;">
+                        <button class="btn btn-success" id="import-btn">استيراد البيانات</button>
+                    </div>
+                </div>
+            </main>
+        </div>
+
+        <!-- Help/Instructions Screen -->
+        <div id="help-screen" class="screen">
+            <header class="app-header">
+                <h2>التعليمات وطريقة الاستخدام</h2>
+            </header>
+            <nav class="main-nav">
+                <button class="nav-btn" data-screen="dashboard">الرئيسية</button>
+                <button class="nav-btn" data-screen="inventory">المخزون</button>
+                <button class="nav-btn" data-screen="transactions">المعاملات</button>
+                <button class="nav-btn" data-screen="creditors-debtors">الدائنين والمدينين</button>
+                <button class="nav-btn" data-screen="reports">التقارير</button>
+                <button class="nav-btn" data-screen="settings">الإعدادات</button>
+                <button class="nav-btn active" data-screen="help">التعليمات</button>
+            </nav>
+            <main class="main-content">
+                <div class="help-content">
+                    <section class="help-section">
+                        <h3>1. تسجيل الدخول</h3>
+                        <p>استخدم البريد الإلكتروني وكلمة المرور لتسجيل الدخول. سيتم حفظ جلسة تسجيل الدخول تلقائياً وستبقى مسجلاً حتى تقوم بتسجيل الخروج.</p>
+                        <p><strong>البيانات الافتراضية:</strong></p>
+                        <ul>
+                            <li>البريد الإلكتروني: admin@example.com</li>
+                            <li>كلمة المرور: admin123</li>
+                        </ul>
+                    </section>
+
+                    <section class="help-section">
+                        <h3>2. إدارة المخزون</h3>
+                        <h4>الفئات:</h4>
+                        <ul>
+                            <li>انقر على "إضافة فئة" لإنشاء فئة جديدة</li>
+                            <li>يمكنك تعديل أو حذف الفئات الموجودة</li>
+                            <li>لا يمكن حذف فئة تحتوي على منتجات</li>
+                        </ul>
+                        <h4>المنتجات:</h4>
+                        <ul>
+                            <li>انقر على "إضافة منتج" لإضافة منتج جديد</li>
+                            <li>أدخل اسم المنتج، العلامة التجارية، الفئة، سعر التكلفة، سعر البيع، والكمية</li>
+                            <li>سيتم عرض جميع الأسعار بجميع العملات تلقائياً</li>
+                            <li>استخدم مربع البحث للبحث عن منتج بالاسم أو العلامة التجارية</li>
+                        </ul>
+                    </section>
+
+                    <section class="help-section">
+                        <h3>3. المعاملات المالية</h3>
+                        <h4>البيع:</h4>
+                        <ul>
+                            <li>اختر المنتج والكمية</li>
+                            <li>أدخل المبلغ واختر العملة</li>
+                            <li>يمكنك اختيار عميل (مدين) للبيع بالآجل</li>
+                            <li>سيتم تحديث المخزون تلقائياً</li>
+                        </ul>
+                        <h4>الشراء:</h4>
+                        <ul>
+                            <li>اختر المنتج والكمية المشتراة</li>
+                            <li>أدخل المبلغ واختر العملة</li>
+                            <li>يمكنك اختيار مورد (دائن) للشراء بالآجل</li>
+                            <li>سيتم تحديث المخزون وسعر التكلفة تلقائياً</li>
+                        </ul>
+                        <h4>المصروفات:</h4>
+                        <ul>
+                            <li>أدخل المبلغ والوصف</li>
+                            <li>اختر العملة</li>
+                        </ul>
+                    </section>
+
+                    <section class="help-section">
+                        <h3>4. الدائنين والمدينين</h3>
+                        <ul>
+                            <li><strong>المدينون:</strong> العملاء الذين يدينون لك بأموال</li>
+                            <li><strong>الدائنون:</strong> الموردين الذين تدين لهم بأموال</li>
+                            <li>يمكنك إضافة طرف جديد وتتبع رصيده</li>
+                            <li>سجل الدفعات لتحديث الرصيد تلقائياً</li>
+                            <li>عرض تفاصيل الطرف لرؤية سجل المعاملات</li>
+                        </ul>
+                    </section>
+
+                    <section class="help-section">
+                        <h3>5. التقارير</h3>
+                        <ul>
+                            <li><strong>التقرير العام:</strong> يعرض إجمالي الربح، التكلفة، المبيعات، والمصروفات</li>
+                            <li><strong>تقارير الفئات:</strong> إحصائيات مفصلة لكل فئة</li>
+                            <li><strong>تقارير المنتجات:</strong> تفاصيل الربح والمبيعات لكل منتج</li>
+                        </ul>
+                    </section>
+
+                    <section class="help-section">
+                        <h3>6. الإعدادات</h3>
+                        <h4>أسعار الصرف:</h4>
+                        <ul>
+                            <li>يمكنك إضافة أو تعديل أسعار الصرف</li>
+                            <li>حدد عملة أساسية (عادة الدولار)</li>
+                            <li><strong>ملاحظة مهمة:</strong> الليرة السورية الجديدة والقديمة مرتبطة تلقائياً:
+                                <ul>
+                                    <li>1000 ليرة سورية قديمة = 10 ليرة سورية جديدة</li>
+                                    <li>التحويل يتم تلقائياً عند إجراء المعاملات</li>
+                                </ul>
+                            </li>
+                        </ul>
+                        <h4>النسخ الاحتياطي:</h4>
+                        <ul>
+                            <li><strong>تصدير:</strong> احفظ نسخة احتياطية من جميع البيانات</li>
+                            <li><strong>استيراد:</strong> استرجع البيانات من ملف JSON محفوظ</li>
+                            <li>يُنصح بعمل نسخة احتياطية دورية</li>
+                        </ul>
+                    </section>
+
+                    <section class="help-section">
+                        <h3>7. نصائح مهمة</h3>
+                        <ul>
+                            <li>النظام يعمل بدون إنترنت - جميع البيانات محفوظة محلياً</li>
+                            <li>يتم تحديث الحسابات تلقائياً عند إجراء أي معاملة</li>
+                            <li>يمكنك البحث والفلترة في جميع القوائم</li>
+                            <li>استخدم الألوان للتمييز: الأخضر للبيع، الأزرق للشراء، البرتقالي للمصروفات</li>
+                            <li>المنتجات ذات المخزون المنخفض (أقل من 10) تظهر باللون البرتقالي</li>
+                            <li>المنتجات غير المتوفرة تظهر باللون الأحمر</li>
+                        </ul>
+                    </section>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="app-footer">
+        <p>تم التطوير بواسطة <a href="https://www.moonesmezher.com" target="_blank" rel="noopener noreferrer">moones mezher</a></p>
+    </footer>
+
+    <!-- Modals -->
+    <div id="modal-overlay" class="modal-overlay">
+        <div class="modal-content" id="modal-content"></div>
+    </div>
+
+    <!-- Toast Notifications -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <script src="js/storage.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/inventory.js"></script>
+    <script src="js/transactions.js"></script>
+    <script src="js/creditors-debtors.js"></script>
+    <script src="js/reports.js"></script>
+    <script src="js/settings.js"></script>
+    <script src="js/help.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/app.js"></script>
+</body>
+
+</html>

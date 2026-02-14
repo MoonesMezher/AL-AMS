@@ -1,0 +1,8 @@
+{
+  "name": "accounting-system",
+  "version": "1.0.0",
+  "description": "نظام المحاسبة والمخزون - Frontend PWA",
+  "keywords": ["accounting", "inventory", "pwa"],
+  "author": "moones mezher",
+  "license": "MIT"
+}
